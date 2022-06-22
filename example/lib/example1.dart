@@ -63,8 +63,8 @@ class _Example1State extends State<Example1> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SearchField(
-              suggestionState: Suggestion.expand,
-              suggestionAction: SuggestionAction.next,
+              suggestionState: Suggestion.expand, //
+              suggestionAction: SuggestionAction.next, //
               suggestions:
                   _suggestions.map((e) => SearchFieldListItem(e)).toList(),
               textInputAction: TextInputAction.next,

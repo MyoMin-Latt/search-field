@@ -12,6 +12,14 @@ class CountrySearch extends StatefulWidget {
 }
 
 class _CountrySearchState extends State<CountrySearch> {
+  final _searchController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final focus = FocusNode();
+
+  List<Country> countries = [];
+  Country _selectedCountry = Country.init();
+
+  // TODO: dispose
   @override
   void dispose() {
     _searchController.dispose();
@@ -19,19 +27,11 @@ class _CountrySearchState extends State<CountrySearch> {
     super.dispose();
   }
 
-  final _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     countries = data.map((e) => Country.fromMap(e)).toList();
   }
-
-  final _formKey = GlobalKey<FormState>();
-
-  final focus = FocusNode();
-  List<Country> countries = [];
-  Country _selectedCountry = Country.init();
 
   bool containsCountry(String text) {
     final Country? result = countries.firstWhere(
@@ -58,32 +58,46 @@ class _CountrySearchState extends State<CountrySearch> {
                   padding: const EdgeInsets.all(8.0),
                   child: Form(
                     key: _formKey,
-                    child: SearchField(
-                      focusNode: focus,
-                      suggestions: countries
-                          .map((country) =>
-                              SearchFieldListItem(country.name, item: country))
-                          .toList(),
-                      suggestionState: Suggestion.hidden,
-                      hasOverlay: true,
-                      controller: _searchController,
-                      hint: 'Search by country name',
-                      maxSuggestionsInViewPort: 4,
-                      itemHeight: 45,
-                      validator: (x) {
-                        if (x!.isEmpty || !containsCountry(x)) {
-                          return 'Please Enter a valid Country';
-                        }
-                        return null;
-                      },
-                      inputType: TextInputType.text,
-                      onSuggestionTap: (SearchFieldListItem<Country> x) {
-                        setState(() {
-                          _selectedCountry = x.item!;
-                        });
-                        _formKey.currentState!.validate();
-                        focus.unfocus();
-                      },
+                    child: Column(
+                      children: [
+                        SearchField(
+                          // TODO: focus
+                          focusNode: focus,
+                          suggestions: countries
+                              .map((country) => SearchFieldListItem(
+                                  country.name,
+                                  item: country))
+                              .toList(),
+
+                          // TODO: Suggestion.hidden
+                          suggestionState: Suggestion.hidden,
+                          hasOverlay: true,
+                          controller: _searchController,
+                          hint: 'Search by country name',
+
+                          // TODO: maxSuggestionsInViewPort
+                          maxSuggestionsInViewPort: 4,
+                          itemHeight: 45,
+                          // TODO: validator
+                          validator: (x) {
+                            if (x!.isEmpty || !containsCountry(x)) {
+                              return 'Please Enter a valid Country';
+                            }
+                            return null;
+                          },
+                          // TODO: inputType
+                          inputType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
+                          onSuggestionTap: (SearchFieldListItem<Country> x) {
+                            setState(() {
+                              _selectedCountry = x.item!;
+                            });
+                            _formKey.currentState!.validate();
+                            focus.unfocus();
+                          },
+                        ),
+                        const TextField()
+                      ],
                     ),
                   ),
                 ),
